@@ -47,6 +47,7 @@
     "react-router-dom": "^5.0.0",
     "react-simple-sidenav": "^1.0.1",
     "react-slick": "^0.23.2",
+    "react-transition-group": "^2.9.0",
     "resolve": "1.10.0",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.1",
