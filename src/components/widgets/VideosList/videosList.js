@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { URL } from '../../../config';
 import Button from '../Button/button';
+import VideosListTemplate from './videosListTemplate'
 
 
 
@@ -38,17 +39,18 @@ class VideosList extends React.Component {
       })
     }
 
-    axios.get(`${URL}/videos?_start${start}&_end${end}`)
+    axios.get(`${URL}/videos?_start=${start}&_end=${end}`)
     .then( response => {
       this.setState({
-        videos:[...this.state.videos, ...response.data]
+        videos:[...this.state.videos,...response.data],
+        start, end
       })
     })
 
   }
 
   renderVideos = () => {
-    let template = <VideosTemplate data={this.state.videos} teams={this.state.teams}/>
+    let template = <VideosListTemplate data={this.state.videos} teams={this.state.teams}/>
 
     switch(this.props.type){
       case('card'):
@@ -60,7 +62,8 @@ class VideosList extends React.Component {
   }
 
   loadMore = () => {
-
+    let end = this.state.end + this.state.amount;
+    this.request(this.state.end, end);
   }
 
   renderButton = (loadmore) => {
@@ -76,7 +79,6 @@ class VideosList extends React.Component {
   }
 
   render () {
-    console.log(this.state.videos);
     return (
       <div className='videoList_wrapper'>
         {this.renderTitle(this.props.title)}

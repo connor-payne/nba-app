@@ -14,7 +14,9 @@ const Header = (props) => {
         style={{
           color:'#dfdfdf',
           padding:'10px',
-          cursor:'pointer'
+          cursor:'pointer',
+          fontSize:'20px',
+          marginTop:'7px'
         }}
         />
     </div>
