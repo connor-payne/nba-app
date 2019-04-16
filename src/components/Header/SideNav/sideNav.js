@@ -14,7 +14,7 @@ const SideNavigation = (props) => {
         }}
         onOpenNav={props.onOpenNav}
       >
-      <SideNavItems />
+      <SideNavItems {...props}/>
       </SideNav>
     </div>
   )

@@ -7,37 +7,41 @@ import FontAwesome from 'react-fontawesome';
 
 const SideNavItems = (props) => {
 
-
   const items = [
     {
       type: 'option',
       icon: 'home',
       text: 'Home',
-      link: '/'
+      link: '/',
+      login:''
     },
     {
       type: 'option',
       icon: 'file-alt',
       text: 'News',
-      link: '/news'
+      link: '/news',
+      login:''
     },
     {
       type: 'option',
       icon: 'play',
       text: 'Videos',
-      link: '/videos'
+      link: '/videos',
+      login:''
     },
     {
       type: 'option',
       icon: 'sign-in-alt',
       text: 'Sign in',
-      link: '/sign-in'
+      link: '/sign-in',
+      login:false
     },
     {
       type: 'option',
       icon: 'sign-out-alt',
       text: 'Sign out',
-      link: '/sign-out'
+      link: '/sign-out',
+      login:true
     }
   ]
 
