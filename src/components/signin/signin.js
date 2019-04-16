@@ -116,7 +116,7 @@ class SignIn extends React.Component {
         })
         if(type){
           firebase.auth()
-          .createUserWithEmailAndPassword(
+          .signInWithEmailAndPassword(
             dataToSubmit.email,
             dataToSubmit.password
           ).then(()=>{
