@@ -11,6 +11,8 @@ import VideosMain from './components/Articles/Videos/Main/index';
 import SignIn from './components/signin/signin';
 import Dashboard from './components/Dashboard/dashboard';
 
+import PrivateRoutes from './components/AuthRoutes/privateRoutes';
+import PublicRoutes from './components/AuthRoutes/publicRoutes';
 const Routes = (props) => {
         return(
             <Layout user={props.user}>
