@@ -11,19 +11,19 @@ import VideosMain from './components/Articles/Videos/Main/index';
 import SignIn from './components/signin/signin';
 import Dashboard from './components/Dashboard/dashboard';
 
-import PrivateRoutes from './components/AuthRoutes/privateRoutes';
-import PublicRoutes from './components/AuthRoutes/publicRoutes';
+import PrivateRoute from './components/AuthRoutes/privateRoutes';
+import PublicRoute from './components/AuthRoutes/publicRoutes';
 const Routes = (props) => {
         return(
             <Layout user={props.user}>
                 <Switch>
-                    <Route path="/" exact component={Home}/>
-                    <Route path="/news" exact component={NewsMain}/>
-                    <Route path="/articles/:id" exact component={NewsArticle}/>
-                    <Route path="/videos/:id" exact component={VideoArticle}/>
-                    <Route path="/videos" exact component={VideosMain}/>
-                    <Route path="/sign-in" exact component={SignIn}/>
-                    <Route path="/dashboard" exact component={Dashboard}/>
+                    <PublicRoute {...props} resricted={false}  path="/" exact component={Home}/>
+                    <PublicRoute {...props} resricted={false}  path="/news" exact component={NewsMain}/>
+                    <PublicRoute {...props} resricted={false}  path="/articles/:id" exact component={NewsArticle}/>
+                    <PublicRoute {...props} resricted={false}  path="/videos/:id" exact component={VideoArticle}/>
+                    <PublicRoute {...props} resricted={false} path="/videos" exact component={VideosMain}/>
+                    <PublicRoute {...props} resricted={true} path="/sign-in" exact component={SignIn}/>
+                    <PrivateRoute {...props} path="/dashboard" exact component={Dashboard}/>
                 </Switch>
             </Layout>
 
