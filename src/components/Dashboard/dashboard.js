@@ -1,10 +1,12 @@
 import React from 'react';
 import FormField from '../widgets/FormFields/formFields';
 import './dashboard.css';
-
+import { firebaseTeams, firebaseArticles, firebase } from '../../firebase';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
+
+import Uploader from '../widgets/FileUploader/fileUploader';
 
 class Dashboard extends React.Component {
 
@@ -43,18 +45,74 @@ class Dashboard extends React.Component {
         touched:false,
         validationMessage:''
       },
-    }
+      body: {
+        element:'texteditor',
+        value: '',
+        valid: true
+      },
+      image: {
+        element:'image',
+        value: '',
+        valid: true
+      },
+      team:{
+        element:'select',
+        value:'',
+        config:{
+          name:'team_input',
+          options:[],
+      },
+      validation:{
+        required:true,
+      },
+      valid:false,
+      touched:false,
+      validationMessage:''
+    },
+  }
+}
+
+  componentDidMount(){
+    this.loadTeams()
   }
 
+  loadTeams = () =>{
+    firebaseTeams.once('value')
+    .then((snapshot)=>{
+      let team = [];
 
-  updateForm = (element) => {
+      snapshot.forEach((childSnapshot)=>{
+        team.push({
+          id:childSnapshot.val().teamId,
+          name: childSnapshot.val().city
+        })
+      })
+
+      const newFormdata = {...this.state.formdata}
+      const newElement = {...newFormdata['team']}
+
+      newElement.config.options = team;
+      newFormdata['team'] = newElement;
+      this.setState({
+        formdata:newFormdata
+      })
+    })
+  }
+
+  updateForm = (element,content = '') => {
     const newFormdata = {
       ...this.state.formdata
     }
     const newElement = {
       ...newFormdata[element.id]
     }
-    newElement.value = element.event.target.value;
+
+    if(content === ''){
+      newElement.value = element.event.target.value;
+    } else {
+      newElement.value = content
+    }
+
 
     if(element.blur){
       let validData = this.validate(newElement);
@@ -114,7 +172,36 @@ class Dashboard extends React.Component {
     console.log(dataToSubmit);
 
     if(formIsValid){
-      console.log('SUBMIT POST')
+      this.setState({
+        loading:true,
+        postError:''
+      })
+
+      firebaseArticles.orderByChild('id')
+      .limitToLast(1).once('value')
+      .then( snapshot =>{
+        let articleId = null;
+        snapshot.forEach(childSnapshot=>{
+          articleId = childSnapshot.val().id
+        })
+
+        dataToSubmit['date'] = firebase.database.ServerValue.TIMESTAMP;
+        dataToSubmit['id'] = 0;
+        dataToSubmit['team'] = parseInt(dataToSubmit['team'])
+
+        firebaseArticles.push(dataToSubmit)
+        .then( article =>{
+          this.props.history.push(`/articles/${article.key}`)
+        }).catch(e =>{
+          this.setState({
+            postError: e.message
+          })
+        })
+
+      })
+
+
+
     }else{
       this.setState({
         postError:'Something went wrong'
@@ -147,11 +234,15 @@ class Dashboard extends React.Component {
 
     let html = stateToHTML(contentState)
 
-    console.log(html)
+    this.updateForm({id:'body'}, html)
 
     this.setState({
       editorState
     })
+  }
+
+  storeFilename = (filename) => {
+    this.updateForm({id:'image'}, filename)
   }
 
 
@@ -160,6 +251,10 @@ class Dashboard extends React.Component {
       <div className='postContainer'>
         <form onSubmit={this.submitForm}>
           <h2>Add Post</h2>
+
+            <Uploader
+              filename={(filename)=>this.storeFilename(filename)}
+            />
 
             <FormField
               id={'author'}
@@ -178,6 +273,12 @@ class Dashboard extends React.Component {
             wrapperClassName='myEditor-wrapper'
             editorClassName='myEditor-editor'
             onEditorStateChange={this.onEditorStateChange}
+          />
+
+          <FormField
+            id={'team'}
+            formdata={this.state.formdata.team}
+            change={(element)=>this.updateForm(element)}
           />
 
           {this.submitButton()}
